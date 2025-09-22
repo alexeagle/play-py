@@ -1,0 +1,51 @@
+load("@aspect_bazel_lib//lib:jq.bzl", "jq")
+load("@aspect_bazel_lib//lib:run_binary.bzl", "run_binary")
+load("@aspect_rules_py//py:defs.bzl", "py_library", "py_test")
+load("@rules_uv//uv:pip.bzl", "pip_compile")
+
+# keep
+filegroup(
+    name = "requirements",
+    srcs = ["requirements.txt"],
+    visibility = ["//requirements:__pkg__"],
+)
+
+pip_compile(
+    name = "pip_compile",
+    requirements_in = "pyproject.toml",
+    requirements_txt = "requirements.txt",
+    visibility = ["//requirements:__pkg__"],
+)
+
+# Generate data.json containing build timestamp information.
+# Useful with Bazel's --stamp flag.
+jq(
+    name = "data",
+    srcs = [],
+    filter = "|".join([
+        # Don't directly reference $STAMP as it's only set when stamping
+        # This 'as' syntax results in $stamp being null in unstamped builds.
+        "$ARGS.named.STAMP as $stamp",
+        # Provide a default using the "alternative operator" in case $stamp is null.
+        """.TIMESTAMP = ($stamp[0].BUILD_TIMESTAMP // "<unstamped>")""",
+    ]),
+)
+
+
+py_library(
+    name = "mylib",
+    srcs = ["say.py"],
+    visibility = ["//:__subpackages__"],
+    deps = ["@pip//cowsay"],
+)
+
+py_test(
+    name = "say_test",
+    srcs = ["say_test.py"],
+    pytest_main = True,
+    deps = [
+        "mylib",
+        "@pip//coverage",
+        "@pip//pytest",
+    ],
+)

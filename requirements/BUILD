@@ -11,7 +11,7 @@ pip_compile(
     data = glob([
         "*.in",
         "*.txt",
-    ]),
+    ]) + ["//mylib:requirements"],
     requirements_in = "all.in",
     requirements_txt = "all.txt",
 )

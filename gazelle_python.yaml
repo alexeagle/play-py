@@ -9,6 +9,8 @@ manifest:
     annotated_types: annotated_types
     colorama: colorama
     copier: copier
+    coverage: coverage
+    cowsay: cowsay
     dunamai: dunamai
     funcy: funcy
     iniconfig: iniconfig
