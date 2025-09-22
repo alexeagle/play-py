@@ -1,0 +1,28 @@
+diff --git a/MODULE.bazel b/MODULE.bazel
+index a976705..60f043d 100644
+--- a/MODULE.bazel
++++ b/MODULE.bazel
+@@ -4,6 +4,7 @@ module(
+     compatibility_level = 1,
+ )
+ 
++bazel_dep(name = "aspect_rules_py", version = "1.6.3")
+ bazel_dep(name = "rules_shell", version = "0.4.1")
+ bazel_dep(name = "bazel_skylib", version = "1.4.2")
+ bazel_dep(name = "rules_python", version = "0.36.0")
+diff --git a/internal/BUILD b/internal/BUILD
+index 70f09d8..89d0701 100644
+--- a/internal/BUILD
++++ b/internal/BUILD
+@@ -1,10 +1,9 @@
+ load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+-load("@rules_python//python:defs.bzl", "py_binary")
++load("@aspect_rules_py//py:defs.bzl", "py_binary")
+ 
+ py_binary(
+     name = "multirun",
+     srcs = ["multirun.py"],
+-    python_version = "PY3",
+     visibility = ["//visibility:public"],
+     deps = [
+         "@rules_python//python/runfiles",

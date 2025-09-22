@@ -15,20 +15,17 @@ def impl(ctx) -> int:
         events = True,
         bazel_flags = [
             "--isatty=" + str(int(out.is_tty)),
-            # Assert that the flags we pass Bazel don't disagree with earlier flags.
-            # Discarding the analysis cache is slow for this coverage run, and then slow again
-            # for the subsequent Bazel build that discards it again.
-            "--noallow_analysis_discard",
             # We probably want to abbreviate the following flags under
             # "--config=coverage"
+            "--combined_report=lcov",  # LAME!!
             "--collect_code_coverage",
-            "--instrumentation_filter=",
+            "--instrumentation_filter=^//",
             # See https://github.com/bazel-contrib/bazelrc-preset.bzl/issues/83
             "--experimental_fetch_all_coverage_outputs",
             "--experimental_split_coverage_postprocessing",
         ],
-        bazel_verb = "test"
-    );
+        bazel_verb = "test",
+    )
 
     for event in build.events():
         # TODO: get the paths of produced (or cached) coverage report files
@@ -36,14 +33,21 @@ def impl(ctx) -> int:
         if event.type == "progress":
             out.write(event.payload.stdout)
             out.write(event.payload.stderr)
+        if event.type == "named_set_of_files":
+            for file in event.payload.files:
+                if file.name == "coverage.dat":
+                    filepath = file.file.uri.removeprefix("file://")
+                    lcov_data = ctx.std.fs.read_to_string(filepath)
+                    ctx.std.io.stderr.write(lcov_data)
 
     build.wait()
     # TODO: get the delta of changed files from VCS, and render 'incremental' coverage as the default presentation
-    
+
     return 0
+
 coverage = task(
     implementation = impl,
     args = {
         "targets": args.positional(min = 1),
-    }
+    },
 )

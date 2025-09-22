@@ -1,6 +1,6 @@
 load("@aspect_bazel_lib//lib:jq.bzl", "jq")
-load("@aspect_bazel_lib//lib:run_binary.bzl", "run_binary")
-load("@aspect_rules_py//py:defs.bzl", "py_library", "py_test")
+load("@aspect_rules_py//py:defs.bzl", "py_library", "py_pytest_main", "py_test")
+load("@pip//:requirements.bzl", "requirement")
 load("@rules_uv//uv:pip.bzl", "pip_compile")
 
 # keep
@@ -31,7 +31,6 @@ jq(
     ]),
 )
 
-
 py_library(
     name = "mylib",
     srcs = ["say.py"],
@@ -39,10 +38,18 @@ py_library(
     deps = ["@pip//cowsay"],
 )
 
+py_pytest_main(
+    name = "__test__",
+    deps = [
+        requirement("coverage"),
+        requirement("pytest"),
+    ],
+)
+
 py_test(
     name = "say_test",
     srcs = ["say_test.py"],
-    pytest_main = True,
+    main = ":__test__.py",
     deps = [
         "mylib",
         "@pip//coverage",
