@@ -17,7 +17,6 @@ def impl(ctx) -> int:
             "--isatty=" + str(int(out.is_tty)),
             # We probably want to abbreviate the following flags under
             # "--config=coverage"
-            "--combined_report=lcov",  # LAME!!
             "--collect_code_coverage",
             "--instrumentation_filter=^//",
             # See https://github.com/bazel-contrib/bazelrc-preset.bzl/issues/83
@@ -27,22 +26,24 @@ def impl(ctx) -> int:
         bazel_verb = "test",
     )
 
+    lcov_data = []
     for event in build.events():
         # TODO: get the paths of produced (or cached) coverage report files
         # TODO: populate a GITHUB_OUTPUT variable so we can use https://github.com/codecov/codecov-action
         if event.type == "progress":
+            # Bazel is dumb and doesn't produce coverage data as named_set_of_files
+            if event.payload.stdout.strip().endswith("coverage.dat"):
+                lcov_data.append(event.payload.stdout.strip())
+                continue
             out.write(event.payload.stdout)
             out.write(event.payload.stderr)
-        if event.type == "named_set_of_files":
-            for file in event.payload.files:
-                if file.name == "coverage.dat":
-                    filepath = file.file.uri.removeprefix("file://")
-                    lcov_data = ctx.std.fs.read_to_string(filepath)
-                    ctx.std.io.stderr.write(lcov_data)
+
 
     build.wait()
     # TODO: get the delta of changed files from VCS, and render 'incremental' coverage as the default presentation
-
+    github_output = ctx.std.env.var("GITHUB_OUTPUT")
+    if github_output:
+        ctx.std.fs.write(github_output, "files=" + ",".join(lcov_data))
     return 0
 
 coverage = task(

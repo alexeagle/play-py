@@ -1,0 +1,36 @@
+# Basic Continuous Integration on GitHub Actions
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  Coverage:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout repo in the standard way
+      - uses: actions/checkout@v5
+
+      # Install Aspect CLI for Tasks
+      # We could easily add some syntax sugar so it's like
+      # uses: aspect-build/install-cli@v2
+      - uses: jaxxstorm/action-install-gh-release@v2.1.0
+        with:  &install-defn
+          repo: aspect-build/aspect-cli
+          asset-name: aspect-cli
+          platform: unknown_linux
+          arch: x86_64
+          extension-matching: disable
+          rename-to: aspect
+          chmod: 0755
+
+      - id: coverage
+        run: aspect coverage
+      - uses: codecov/codecov-action@v5
+        with:
+          files: ${{ steps.coverage.outputs.files }}
+          token: ${{ secrets.CODECOV_TOKEN }}

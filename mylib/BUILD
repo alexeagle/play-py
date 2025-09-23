@@ -38,18 +38,10 @@ py_library(
     deps = ["@pip//cowsay"],
 )
 
-py_pytest_main(
-    name = "__test__",
-    deps = [
-        requirement("coverage"),
-        requirement("pytest"),
-    ],
-)
-
 py_test(
     name = "say_test",
     srcs = ["say_test.py"],
-    main = ":__test__.py",
+    pytest_main = True,
     deps = [
         "mylib",
         "@pip//coverage",
