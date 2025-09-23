@@ -27,10 +27,11 @@ jobs:
           extension-matching: disable
           rename-to: aspect
           chmod: 0755
-
+      - run: echo "--config=ci" > user.bazelrc
       - id: coverage
         run: aspect coverage
       - uses: codecov/codecov-action@v5
         with:
+          disable_search: true
           files: ${{ steps.coverage.outputs.files }}
           token: ${{ secrets.CODECOV_TOKEN }}
