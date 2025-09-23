@@ -43,7 +43,7 @@ def impl(ctx) -> int:
     # TODO: get the delta of changed files from VCS, and render 'incremental' coverage as the default presentation
     github_output = ctx.std.env.var("GITHUB_OUTPUT")
     if github_output:
-        ctx.std.fs.write(github_output, "files=" + ",".join(lcov_data))
+        ctx.std.fs.write(github_output, "files=" + ",".join(lcov_data) + "\n")
     return 0
 
 coverage = task(
