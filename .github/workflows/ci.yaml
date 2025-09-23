@@ -27,9 +27,14 @@ jobs:
           extension-matching: disable
           rename-to: aspect
           chmod: 0755
-      - run: echo "--config=ci" > user.bazelrc
+      
       - id: coverage
         run: aspect coverage
+
+      - run: |
+          echo "Raw output file:"
+          cat $GITHUB_OUTPUT
+          echo "Parsed output: ${{ steps.coverage.outputs.files }}"
       - uses: codecov/codecov-action@v5
         with:
           disable_search: true

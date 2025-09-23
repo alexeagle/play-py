@@ -11,7 +11,7 @@ Improvements over 'bazel coverage' command:
 def impl(ctx) -> int:
     out = ctx.std.io.stdout
     build = ctx.build(
-        "//...",
+        "//mylib:all",
         events = True,
         bazel_flags = [
             "--isatty=" + str(int(out.is_tty)),
