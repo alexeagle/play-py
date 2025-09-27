@@ -7,7 +7,7 @@
         "url": "https://github.com/aspect-build/aspect-cli/releases/download/2025.11.0/aspect-cli_x86_64_unknown_linux_musl",
         "os": "linux",
         "cpu": "x86_64",
-        "sha256": "a1309caf973a0c1264210658af42a17fa920a1aa2075fc33c287542cde4f3372"
+        "sha256": "0b7bef6dcf2c81c046b2dffaa533d592577d491112f9a023ade0c2f08c1db558"
       }
     ]
   },
