@@ -44,6 +44,8 @@ def try_pr_comment(ctx, template, model):
         # This value matches the branch or tag name shown on GitHub. For example, feature-branch-1.
         # For pull requests, the format is <pr_number>/merge.
         ref_name.split("/")[0],
+        "--edit-last",
+        "--create-if-none",
         "--repo", repo,
         "--body-file", body,
     ]).spawn().wait() # ignore failures
