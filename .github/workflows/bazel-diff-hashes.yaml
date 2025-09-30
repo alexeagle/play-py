@@ -14,7 +14,7 @@ jobs:
       - uses: bazel-contrib/setup-bazel@0.15.0
       - run: |
             hashes=$(mktemp)
-            bazel run //tools:bazel-diff generate-hashes --workspacePath=${{ github.workspace }} --output=$hashes
+            bazel run //tools:bazel-diff generate-hashes --workspacePath ${{ github.workspace }} $hashes
             echo "hashes=$hashes" >> $GITHUB_OUTPUT
       - uses: actions/upload-artifact@v4
         with:
