@@ -85,7 +85,7 @@ def impl(ctx: task_context):
         ctx.std.io.stderr.write("Error getting impacted targets: %s" % get_impacted_targets.code)
         return 1
     
-    ctx.std.io.stdout.write("Impacted Targets for Revision %s: %s" % (current_revision, ctx.std.fs.read_to_string(impacted_targets_path)))
+    ctx.std.io.stdout.write("Impacted Targets\n: %s" % ctx.std.fs.read_to_string(impacted_targets_path))
     return 0
 
 affected = task(
