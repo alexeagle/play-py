@@ -42,7 +42,7 @@ def impl(ctx: task_context):
     merge_base = exec(ctx.std.process.command("git").args(["merge-base", "HEAD", "origin/main"]))
     checkout = ctx.std.process.command("git").args(["checkout", merge_base, "--quiet"]).spawn().wait()
     if not checkout.success:
-        ctx.std.io.err.write("Error checking out merge base: %s" % checkout.stderr)
+        ctx.std.io.stderr.write("Error checking out merge base: %s" % checkout.stderr)
         return 1
 
     out.write("Generating Hashes for Base Revision %s\n" % merge_base)
@@ -62,7 +62,7 @@ def impl(ctx: task_context):
     out.write("Restoring current revision...\n")
     restore = ctx.std.process.command("git").args(["checkout", current_revision, "--quiet"]).spawn().wait()
     if not restore.success:
-        ctx.std.io.err.write("Error checking out original commit: %s" % checkout.stderr)
+        ctx.std.io.stderr.write("Error checking out original commit: %s" % checkout.stderr)
         return 1
 
     generate_hashes = bazel_diff([
