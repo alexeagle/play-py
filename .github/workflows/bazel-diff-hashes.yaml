@@ -1,0 +1,22 @@
+# Basic Continuous Integration on GitHub Actions
+
+name: Compute bazel-diff hashes
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  Hashes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: bazel-contrib/setup-bazel@0.15.0
+      - run: |
+            hashes=$(mktemp)
+            bazel run //tools:bazel-diff generate-hashes $hashes
+            echo "hashes=$hashes" >> $GITHUB_OUTPUT
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hashes
+          path: ${{ steps.hashes.outputs.hashes }}
