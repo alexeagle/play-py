@@ -15,8 +15,14 @@ load("@bazel_env.bzl", "bazel_env")
 load("@bazelrc-preset.bzl", "bazelrc_preset")
 load("@multitool//:tools.bzl", MULTITOOL_TOOLS = "TOOLS")
 load("@rules_python//python/entry_points:py_console_script_binary.bzl", "py_console_script_binary")
+load("@rules_java//java:defs.bzl", "java_binary")
 
 package(default_visibility = ["//visibility:public"])
+java_binary(
+    name = "bazel-diff",
+    main_class = "com.bazel_diff.Main",
+    runtime_deps = ["@bazel-diff//jar"],
+)
 
 bazelrc_preset(
     name = "preset",
