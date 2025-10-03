@@ -5,8 +5,6 @@ from os import path, getenv, sep
 # for a more robust lookup mechanism of files provided in the `data` attribute.
 WORKSPACE=getenv('BAZEL_WORKSPACE', '')
 FOLDER=path.dirname(__file__).split(WORKSPACE + sep)[-1]
-
-
 def moo(text):
     cowsay.cow(text)
 

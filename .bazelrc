@@ -12,6 +12,8 @@ common --noexperimental_merged_skyframe_analysis_execution
 # NB: some tools run py_binary targets even if the user didn't select to add Python to their project
 common --@rules_python//python/config_settings:bootstrap_impl=script
 
+common:lint --aspects=//tools/lint:linters.bzl%ruff
+
 # Load any settings & overrides specific to the current user from `.aspect/bazelrc/user.bazelrc`.
 # This file should appear in `.gitignore` so that settings are not shared with team members. This
 # should be last statement in this config so the user configuration is able to overwrite flags from
