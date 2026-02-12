@@ -48,4 +48,4 @@ jobs:
         with:  *install-defn
       - run: aspect test
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.MARVIN_COMMENT_TOKEN }}
